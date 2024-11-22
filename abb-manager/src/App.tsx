@@ -1,0 +1,38 @@
+import React from 'react';
+import './App.css';
+import { StartPage } from './Pages/StartPage/StartPage';
+import { Route, Routes } from 'react-router-dom';
+import { Layout } from './Components/Layout/Layout';
+import { Dashboard } from './Pages/Dashboard/Dashboard';
+import { EditBlog } from './Pages/EditBlog/EditBlog';
+import { ThemeProvider } from '@mui/material';
+import store from './Store/store'
+import { theme } from './theme';
+import { Provider } from 'react-redux';
+import { WordMemPage } from './Pages/WordMemPage/WordMemPage';
+
+
+function App() {
+  return (
+    <div className="App">
+      <Provider store={ store }>
+      <ThemeProvider theme={theme}>
+
+      <Routes >
+        <Route path="/" element={<Layout />}>
+
+        <Route path="/" element={<StartPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard/:id" element={<EditBlog isNew={false} />} />
+        <Route path="/dashboard/new" element={<EditBlog isNew={true} />} />
+        <Route path="/memory/" element={<WordMemPage />} />
+        </Route>
+      </Routes>
+
+      </ThemeProvider>
+      </Provider>
+    </div>
+  );
+}
+
+export default App;

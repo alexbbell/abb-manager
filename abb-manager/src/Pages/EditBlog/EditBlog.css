@@ -1,0 +1,26 @@
+.fileContainer {
+    border: #000 1px solid;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+}
+
+.item {
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+    border-bottom: #CCC 1px solid;
+}
+
+.item div:nth-child(1) {
+    width: 60%
+}
+.item div:nth-child(2) {
+    width: 50px
+}
+.btnRemove {
+    color: red;
+    cursor: pointer;
+    font-weight: 600;
+}

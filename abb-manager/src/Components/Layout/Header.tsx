@@ -1,0 +1,207 @@
+// @flow
+import { Avatar, Box, Button, IconButton, Link, Menu, MenuItem, Modal, Tooltip } from '@mui/material';
+import AppBar from '@mui/material/AppBar/AppBar';
+import Container from '@mui/material/Container/Container';
+import Toolbar from '@mui/material/Toolbar/Toolbar';
+import Typography from '@mui/material/Typography/Typography';
+import * as React from 'react';
+import AdbIcon from '@mui/icons-material/Adb';
+import MenuIcon from '@mui/icons-material/Menu';
+import { LogOut } from '../../Middleware/AuthActions';
+import { useNavigate } from 'react-router-dom';
+
+type Links = {
+  Title: string,
+  Url: string
+}
+type Props = {
+
+};
+export const Header = (props: Props) => {
+    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const navigate = useNavigate();
+    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorElNav(event.currentTarget);
+    };
+    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorElUser(event.currentTarget);
+    };
+
+    const handleCloseNavMenu = () => {
+        setAnchorElNav(null);
+    };
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const items: Links[] = [
+       { Title: 'Home', Url: '/' },
+       { Title: 'Blog', Url: '/dashboard' },
+       { Title: 'Word memory', Url: '/memory' },
+       { Title: 'About', Url: '/about' }
+    ]
+    const settings = ['Profile', 'Account', 'Dashboard', 'Logout'] as const;
+    type SettingsType = typeof settings[number];
+    const handleCloseUserMenu = (setting:SettingsType) => {
+        console.log('setting', setting)
+        switch(setting) {
+            case 'Profile':
+                break;
+            case 'Account':
+
+                break;
+            case 'Dashboard':
+                break;
+            case 'Logout':
+                console.log('Logout')
+                LogOut()
+                setTimeout( () => {
+                  navigate('/')
+
+                }, 1000)
+
+                break;
+        }
+        setAnchorElUser(null);
+    };
+
+
+    return (
+        <>
+        <AppBar position="static">
+            <Container maxWidth="xl">
+            <Toolbar disableGutters>
+            <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="#app-bar-with-responsive-menu"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            LOGO
+          </Typography>
+
+
+
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'block', md: 'none' },
+              }}
+            >
+              {items.map((page) => (
+                <MenuItem key={page.Url} onClick={handleCloseNavMenu}>
+                  <Link href={page.Url}><Typography textAlign="center">{page.Title}</Typography></Link>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href="#app-bar-with-responsive-menu"
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              flexGrow: 1,
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            LOGO
+          </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {items.map((page) => (
+              <Button
+                key={page.Url}
+
+                onClick={ () => {
+                  navigate(page.Url)
+                  handleCloseNavMenu()
+                }}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {page.Title}
+              </Button>
+            ))}
+          </Box>
+
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+
+            </Menu>
+          </Box>
+
+
+            </Toolbar>
+            </Container>
+
+
+        </AppBar>
+
+</>
+    );
+};

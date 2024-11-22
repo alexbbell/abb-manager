@@ -1,0 +1,86 @@
+.word, .wordCenter {
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    background-color: #abaaec;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    font-size: 20px;
+
+}
+.word:hover {
+    cursor: pointer;
+    background-color: bisque;
+    box-shadow: 2px 2px 0 #bcbcbc, 4px 4px 0 #9c9c9c;;
+}
+.word:focus {
+    background-color: none;
+    background-color: bisque;
+    box-shadow: 2px 2px 0 #CCC, 4px 4px 0 #111;;
+}
+
+.wordCenter {
+    font-size: 25px;
+    font-weight: 500;
+}
+
+.green {
+    background-color: forestgreen;
+}
+.blue {
+    background-color: midnightblue;
+}
+
+.red {
+    background-color: crimson;
+}
+
+.hooray, .error {
+    font-size: 50px;
+    color: #FFFFFF;
+    padding: 5px 15px;
+    color: #000000;
+    text-shadow: 1px 1px 0 #bcbcbc, 1px 1px 0 #9c9c9c;
+}
+
+.error {
+    color: green;
+}
+
+.gcont {
+    display: grid;
+    width: auto;
+    grid-template-rows: [first] 120px [second] 80px [third] 80px ;
+}
+
+.gcont div {
+    border: #000 1px solid;
+
+}
+.gcont .item1 {
+    grid-column-start: 1;
+    grid-row-start: 2;
+}
+
+.gcont .item2 {
+    grid-column-start: 2;
+    grid-row-start: 2;
+}
+
+.gcont .item3 {
+    grid-column-start: 1;
+    grid-row-start: 3;
+}
+
+.gcont .item4 {
+    grid-column-start: 2;
+    grid-row-start: 3;
+}
+
+.gcont .question {
+    grid-column-start: 1;
+    grid-row-start: 1;
+    grid-column-end: 3;
+
+}

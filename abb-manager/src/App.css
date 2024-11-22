@@ -1,0 +1,37 @@
+body {
+    background: url('./../public/assets/images/iananddina.jpg');
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-size: 100% ;
+    background-position-y: center;
+    background-color: rgba(24, 27, 170, 0.8);
+    /* background-blend-mode: lighten; */
+    background-blend-mode: lighten
+}
+
+.datatable {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: wheat;
+    padding: 10px;
+    border-radius: 10px;
+    gap: 10px;
+}
+
+.datatableRow {
+    width: 700px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 10px;
+    flex-grow: 1;
+
+    .clmn1 {
+        width: 50px;
+    }
+    .clmn2 {
+        width: 350px;
+    }
+}
+

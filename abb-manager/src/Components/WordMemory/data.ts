@@ -7,11 +7,15 @@ export interface IWord {
 export const WordEmpty: IWord = {
     id: 0,
     translate1: '',
-    translate2: ''
+    translate2: '',
+}
+
+export interface IWordButton extends IWord {
+    answerSuccess: boolean
 }
 export interface IAnswer {
     word: IWord,
-    success: boolean,
+    success?: boolean,
 }
 
 // Вот пример на 100 слов уровня A2 на немецком с переводом на русский:

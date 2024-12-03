@@ -1,3 +1,17 @@
+.button {
+    display: inline-flex; /* Aligns children in a row */
+    align-items: center; /* Vertically aligns text and icon */
+    gap: 0.5rem; /* Adds spacing between the text and the icon */
+    border: none;
+    background: none;
+    cursor: not-allowed; /* Since it's disabled */
+  }
+
+  .button .buttonContent {
+    display: inline-flex; /* Ensures the text and icon stay together */
+    align-items: center;
+  }
+
 .word, .wordCenter {
     border-radius: 5px;
     padding: 10px;
@@ -7,17 +21,18 @@
     align-content: center;
     text-align: center;
     font-size: 20px;
+    border: #CCC 1px solid;
 
 }
 .word:hover {
     cursor: pointer;
     background-color: bisque;
-    box-shadow: 2px 2px 0 #bcbcbc, 4px 4px 0 #9c9c9c;;
+    box-shadow: 1px 1px 0 #bcbcbc, 2px 2px 0 #9c9c9c;;
 }
 .word:focus {
     background-color: none;
     background-color: bisque;
-    box-shadow: 2px 2px 0 #CCC, 4px 4px 0 #111;;
+    box-shadow: 1px 1px 0 #CCC, 2px 2px 0 #111;;
 }
 
 .wordCenter {

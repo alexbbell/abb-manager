@@ -49,12 +49,11 @@ export class ApiMemory {
             fetch(url)
                 .then(res => res.json())
                 .then(result => {
-                    console.log('res1', result)
                     if(result === '0001-01-01T00:00:00') reject( { endTime: ''})
-                    resolve(result)
+                    resolve({ endtime: result })
                 }).catch(err => {
                 console.error(err)
-                reject( { endTime: ''})
+                reject( { endtime: ''})
             })
         })
     }

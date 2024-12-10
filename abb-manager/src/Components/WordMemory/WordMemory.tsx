@@ -26,6 +26,7 @@ export const WordMemory = (props: Props) => {
     const [cWord, setCWord] = React.useState<IWord>( WordEmpty);
     const [altWords, setAltWords] = React.useState<IWordButton[]>([]);
     const [attempt, setAttempt] = React.useState<number>(0);
+    const [isLoaded, setIsLoaded] = React.useState(false)
     const [isAnswerCorrect, setIsAnswerCorrect] = React.useState(false)
     const [maxAttempts, setMaxAttempts] = React.useState<number>(10);
     const [answers, setAnswers] = React.useState<IAnswer[]>([])
@@ -44,25 +45,27 @@ export const WordMemory = (props: Props) => {
 
     const GetTimer = async():Promise<void> => {
         const timerEnd = await api.GetTimerEnd(tokens.accessToken)
-
-        if(timerEnd?.endtime  || timerEnd.endtime === '') {
+        console.log('timerEnd', timerEnd)
+        if(timerEnd.endtime === '') {
             return
+        } else {
+            console.log('timerEnd.endtime', timerEnd.endtime)
         }
-        console.log('timerEnd', new Date(timerEnd.endtime).toUTCString(), new Date().toUTCString())
+
 
         try {
-
-
-            if (timerEnd.endtime < new Date().toUTCString()) {
+            if (timerEnd.endtime > dayjs().format('YYYY-MM-DDTHH:mm:ss')) {
                 console.log('less')
-                setIsDisabled(true)
+                setIsDisabled(false)
             } else {
                 console.log('more')
+                setIsDisabled(true)
             }
+            setCntDown(timerEnd.endtime)
         } catch (ex) {
             console.error(ex)
         }
-        //setCntDown(timerEnd.endtime)
+        setIsLoaded(true)
     }
 
     React.useEffect( () => {
@@ -76,8 +79,8 @@ export const WordMemory = (props: Props) => {
         })
         setTimer(delay)
         setCWord(item)
-
         setAltWords(fillAnswers2Choose(item))
+
     }, [attempt])
 
     const fillAnswers2Choose = (correctItem:IWord): IWordButton[] => {
@@ -150,89 +153,101 @@ export const WordMemory = (props: Props) => {
 <h1>WordMemory</h1>
 
 
+{
+    !isLoaded ?
+     <>Loading... </> :
     <Grid2 container>
-        {/* <Grid2 size={ { sm: 12, md: 6 } }>
-            <div className='word'>{cWord.translate1}</div>
-        </Grid2> */}
+    {/* <Grid2 size={ { sm: 12, md: 6 } }>
+        <div className='word'>{cWord.translate1}</div>
+    </Grid2> */}
 
-        <Box sx={bgStyles}><Button variant='contained'
-            onClick={ async () => {
-                const t =  await api.SetTimer(tokens.accessToken)
-                const newTime = dayjs(t.endtime).format('YYYY-MM-ddTHH:mm:ss')
-                console.log('ttimer', newTime)
-                setCntDown(newTime)
 
-        }}>Start</Button></Box>
-        <Box sx={bgStyles}><Countdown targetDate={cntDown} /></Box>
+{
+    isDisabled ?
+<Box sx={bgStyles}><Button variant='contained'
+    onClick={ async () => {
+        const t =  await api.SetTimer(tokens.accessToken)
+        const newTime = dayjs(t.endtime).format('YYYY-MM-DDTHH:mm:ss')
+        console.log('ttimer', newTime)
+        setCntDown(newTime)
+        GetTimer()
+}}>Start</Button></Box>
+:
+<Button variant='contained' color='primary' title='End'>End</Button>
 
-        <Grid2 size={ { md: 1} } ></Grid2>
+}
 
-        <Grid2 size={ { sm: 12, md: 12 } } >
 
-        <div  className='gcont'>
 
-            <div className='wordCenter question'>{cWord.translate1}</div>
-                {
-                altWords.map( (word, index) => {
-                    return (
-                        renderButton(word, index)
+
+    <Box sx={bgStyles}><Countdown targetDate={cntDown} /></Box>
+
+    <Grid2 size={ { md: 1} } ></Grid2>
+
+    <Grid2 size={ { sm: 12, md: 12 } } >
+
+    <div  className='gcont'>
+
+        <div className='wordCenter question'>{cWord.translate1}</div>
+            {
+            altWords.map( (word, index) => {
+                return (
+                    renderButton(word, index)
+                )
+            })
+        }</div>
+    </Grid2>
+
+    <Grid2 size={ { md: 1} } ></Grid2>
+
+    <Grid2 size={ 2 } ></Grid2>
+    <Grid2 size={ 7 } >
+    <Box sx={bgStyles}>
+        Results:  { answers.filter(a=>a.success).length} / {answers.length}</Box>
+    </Grid2>
+    <Grid2 size={ 2 } ></Grid2>
+
+
+    <Grid2 container>
+        <Grid2 sx={bgStyles} size={12}>
+            <Box >
+
+
+                <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650, width: '100%' }} aria-label="simple table">
+                    <TableHead>
+                        <TableRow key={'hdrrow'}>
+                            <TableCell>#</TableCell>
+                            <TableCell>Wort</TableCell>
+                            <TableCell>Ubersetzung</TableCell>
+                            <TableCell>Ergebnis</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+            {
+
+                answers.map( (a, index) => {
+                        return (
+                        <TableRow key={`hd_${a.word.translate1}${a.success}`}>
+                            <TableCell>{index+1}</TableCell>
+                            <TableCell>{a.word.translate1}</TableCell>
+                            <TableCell>{a.word.translate2} </TableCell>
+                            <TableCell>{a.success ? 'Ja!' : 'Nein'}</TableCell>
+                        </TableRow>
                     )
                 })
-            }</div>
+            }
+                </TableBody>
+                </Table>
+                </TableContainer>
+                            </Box>
         </Grid2>
 
-        <Grid2 size={ { md: 1} } ></Grid2>
-
-        <Grid2 size={ 2 } ></Grid2>
-        <Grid2 size={ 7 } >
-        <Box sx={bgStyles}>
-            Results:  { answers.filter(a=>a.success).length} / {answers.length}</Box>
-        </Grid2>
-        <Grid2 size={ 2 } ></Grid2>
-
-        <Grid2 size={ 1 } ></Grid2>
-        <Grid2 size={ 10 } >
-            <Button variant='contained' color='primary' title='End'>End</Button>
-        </Grid2>
-        <Grid2 size={1 } ></Grid2>
-
-        <Grid2 container>
-            <Grid2 sx={bgStyles} size={12}>
-                <Box >
-
-
-                    <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650, width: '100%' }} aria-label="simple table">
-                        <TableHead>
-                            <TableRow key={'hdrrow'}>
-                                <TableCell>#</TableCell>
-                                <TableCell>Wort</TableCell>
-                                <TableCell>Ubersetzung</TableCell>
-                                <TableCell>Ergebnis</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                {
-
-                    answers.map( (a, index) => {
-                            return (
-                            <TableRow key={`hd_${a.word.translate1}${a.success}`}>
-                                <TableCell>{index+1}</TableCell>
-                                <TableCell>{a.word.translate1}</TableCell>
-                                <TableCell>{a.word.translate2} </TableCell>
-                                <TableCell>{a.success ? 'Ja!' : 'Nein'}</TableCell>
-                            </TableRow>
-                        )
-                    })
-                }
-                    </TableBody>
-                    </Table>
-                    </TableContainer>
-                                </Box>
-            </Grid2>
-
-        </Grid2>
     </Grid2>
+</Grid2>
+}
+
+
 
 
         </div>

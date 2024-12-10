@@ -39,17 +39,12 @@ export const PostsList = (props: Props) => {
     const [selectedID, setSelectedID] = React.useState(0)
     const [deleteButtonDisabled, setDeleteButtonDisabled] = React.useState(false)
 
-
-
-
     const loadItems = (page: number): void => {
         apiBlogServices.getBlogItems(page).then(res => {
-            console.log('res', res)
             setItems(res)
         }).catch(err => {
             console.error(err)
         })
-
     }
     React.useEffect( () => {
         loadItems(page)

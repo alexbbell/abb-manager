@@ -1,6 +1,5 @@
-import { rejects } from "assert";
 import { SiteVars } from "./constants"
-import { IAccount, IAuthResponse, IBaseItem } from "./interfaces"
+import { IAccount, IAuthResponse } from "./interfaces"
 
 export class ApiServices {
 

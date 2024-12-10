@@ -59,3 +59,7 @@ export interface IOperationResult {
     isSuccess: boolean,
     message: string
 }
+
+export interface ICountDown {
+    endtime: string,
+}

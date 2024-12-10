@@ -11,11 +11,9 @@ export class ApiBlogServices {
     getBlogItems = async (page?:number, perPage?: number):Promise<IBlogReponse> => {
         return new Promise<IBlogReponse>( (resolve, reject) => {
             const url = `${this._blogUrl}?page=${page}`
-            console.log('url', url)
             fetch(url)
                 .then(res => res.json())
                 .then(result => {
-                    console.log('res1', result)
                     resolve(result)
                 }).catch(err => {
                 console.error(err)
@@ -30,7 +28,6 @@ export class ApiBlogServices {
             fetch(`${this._blogUrl}/${id}`)
                 .then(res => res.json())
                 .then(result => {
-                    console.log('res1', result)
                     resolve(result)
                 }).catch(err => {
                 console.error(err)

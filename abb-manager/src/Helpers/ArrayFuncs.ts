@@ -1,6 +1,4 @@
 export class ArrayFuncs {
-
-
     shuffleArray = <T>(array: T[]): T[] => {
         let currentIndex = array.length;
         let randomIndex

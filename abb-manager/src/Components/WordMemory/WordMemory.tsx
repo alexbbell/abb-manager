@@ -9,6 +9,10 @@ import { Button, Paper, SxProps, Table, TableBody, TableCell, TableContainer, Ta
 import Countdown from '../Countdown/Countdown';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ClearIcon from '@mui/icons-material/Clear';
+import { ApiMemory } from '../../Data/ApiMemory';
+import dayjs from 'dayjs';
+import { ITokens } from '../../Data/interfaces';
+import { parseJwt } from '../../Helpers/AuthFunc';
 
 type BtnColor = 'green' | 'blue' | 'red'
 type Props = {
@@ -17,6 +21,8 @@ type Props = {
 export const WordMemory = (props: Props) => {
     const items = words
     const arFuncs = new ArrayFuncs()
+    const api = new ApiMemory(process.env.REACT_APP_ENV??'')
+    const [cntDown, setCntDown] = React.useState<string>( (new Date()).toDateString())
     const [cWord, setCWord] = React.useState<IWord>( WordEmpty);
     const [altWords, setAltWords] = React.useState<IWordButton[]>([]);
     const [attempt, setAttempt] = React.useState<number>(0);
@@ -27,20 +33,41 @@ export const WordMemory = (props: Props) => {
     const delay: number = 2000
     const [isDisabled, setIsDisabled] = React.useState(false)
 
-    console.log('answers', answers)
-// For modal
-    const [openModalResult, setOpenModalResult] = React.useState(false);
-    const handleModalOpen = () => {
-        setOpenModalResult(true);
-    }
-    const handleModalClose = () => {
-        setOpenModalResult(false);
-    }
     const [timer, setTimer] = React.useState<number>(delay)
 
-    React.useEffect( () => {
-        const item:IWord = items[Math.floor(Math.random()*items.length)];
+    const isTokenStr:string = localStorage.getItem('tokens')?? '{}'
+    const tokens: ITokens = JSON.parse(isTokenStr)
 
+
+    console.log({tokens})
+
+
+    const GetTimer = async():Promise<void> => {
+        const timerEnd = await api.GetTimerEnd(tokens.accessToken)
+
+        if(timerEnd?.endtime  || timerEnd.endtime === '') {
+            return
+        }
+        console.log('timerEnd', new Date(timerEnd.endtime).toUTCString(), new Date().toUTCString())
+
+        try {
+
+
+            if (timerEnd.endtime < new Date().toUTCString()) {
+                console.log('less')
+                setIsDisabled(true)
+            } else {
+                console.log('more')
+            }
+        } catch (ex) {
+            console.error(ex)
+        }
+        //setCntDown(timerEnd.endtime)
+    }
+
+    React.useEffect( () => {
+        GetTimer()
+        const item:IWord = items[Math.floor(Math.random()*items.length)];
         const itemBtns:IWordButton[] = items.map( (x) => {
             return {
                 ...x,
@@ -68,12 +95,55 @@ export const WordMemory = (props: Props) => {
     const checkIfCorrect = (obj1: IWord, obj2: IWord): boolean => {
         return obj1.id === obj2.id
     }
-    const targetDate = "2024-12-31T23:59:59";
+
     const bgStyles: SxProps<Theme> = {
         p: 1,
         background: "rgba(0, 0, 0, 0.3)",
-        color: "white",
+        color: "white"
       };
+
+      const renderButton = (word:IWordButton, index:number):JSX.Element  => {
+        return (
+
+        <button key={`btn${word.translate1}`}
+        className={`button word ${colorResults[index]} item${index+1}`}
+        disabled={isDisabled}
+        onClick={ ()=> {
+
+            setIsDisabled(true)
+            const result = checkIfCorrect(cWord, word)
+            const colors: BtnColor[]= []
+            colors[index] = (result && word.id === cWord.id) ? 'green' : 'red'
+            console.log({colors})
+            setColorResults(colors)
+            const newAnswers = [...answers]
+            newAnswers.push( { word: cWord, success: result})
+            altWords[index].answerSuccess = result
+            console.log('altWords', altWords)
+                setAltWords( altWords)
+
+            setTimeout(() => {
+
+                setAnswers(newAnswers)
+                setTimer(delay)
+                setAttempt(attempt + 1)
+                setColorResults([])
+                setIsDisabled(false)
+            }, delay);
+    }}> <span className='buttonContent'>{word.translate2}</span>
+
+
+    {
+    (colorResults[index] === 'red') ?  <ClearIcon sx={{ color: 'red', textAlign: 'right', justifyContent: 'right'}} /> : ''
+        }
+    {
+    (colorResults[index] === 'green') ?<CheckCircleOutlineIcon sx={{ color: 'green'}} /> : ''
+        }
+
+    </button>
+    )
+      }
+
 
     return (
         <div>
@@ -85,7 +155,15 @@ export const WordMemory = (props: Props) => {
             <div className='word'>{cWord.translate1}</div>
         </Grid2> */}
 
-        <Box sx={bgStyles}><Countdown targetDate={targetDate} /></Box>
+        <Box sx={bgStyles}><Button variant='contained'
+            onClick={ async () => {
+                const t =  await api.SetTimer(tokens.accessToken)
+                const newTime = dayjs(t.endtime).format('YYYY-MM-ddTHH:mm:ss')
+                console.log('ttimer', newTime)
+                setCntDown(newTime)
+
+        }}>Start</Button></Box>
+        <Box sx={bgStyles}><Countdown targetDate={cntDown} /></Box>
 
         <Grid2 size={ { md: 1} } ></Grid2>
 
@@ -97,44 +175,7 @@ export const WordMemory = (props: Props) => {
                 {
                 altWords.map( (word, index) => {
                     return (
-                        <button key={`btn${word.translate1}`}
-                            className={`button word ${colorResults[index]} item${index+1}`}
-                            disabled={isDisabled}
-
-
-                            onClick={ ()=> {
-
-                                setIsDisabled(true)
-                                const result = checkIfCorrect(cWord, word)
-                                const colors: BtnColor[]= []
-                                colors[index] = (result && word.id === cWord.id) ? 'green' : 'red'
-                                console.log({colors})
-                                setColorResults(colors)
-                                const newAnswers = [...answers]
-                                newAnswers.push( { word: cWord, success: result})
-                                altWords[index].answerSuccess = result
-                                console.log('altWords', altWords)
-                                    setAltWords( altWords)
-
-                                setTimeout(() => {
-
-                                    setAnswers(newAnswers)
-                                    setTimer(delay)
-                                    setAttempt(attempt + 1)
-                                    setColorResults([])
-                                    setIsDisabled(false)
-                                }, delay);
-                        }}> <span className='buttonContent'>{word.translate2}</span>
-
-
-                        {
-                        (colorResults[index] === 'red') ?  <ClearIcon sx={{ color: 'red', textAlign: 'right', justifyContent: 'right'}} /> : ''
-                            }
-                        {
-                        (colorResults[index] === 'green') ?<CheckCircleOutlineIcon sx={{ color: 'green'}} /> : ''
-                            }
-
-                        </button>
+                        renderButton(word, index)
                     )
                 })
             }</div>
@@ -156,12 +197,12 @@ export const WordMemory = (props: Props) => {
         <Grid2 size={1 } ></Grid2>
 
         <Grid2 container>
-            <Grid2 sx={bgStyles}>
+            <Grid2 sx={bgStyles} size={12}>
                 <Box >
 
 
                     <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <Table sx={{ minWidth: 650, width: '100%' }} aria-label="simple table">
                         <TableHead>
                             <TableRow key={'hdrrow'}>
                                 <TableCell>#</TableCell>

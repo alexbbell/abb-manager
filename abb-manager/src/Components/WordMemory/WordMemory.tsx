@@ -48,10 +48,7 @@ export const WordMemory = (props: Props) => {
         console.log('timerEnd', timerEnd)
         if(timerEnd.endtime === '') {
             return
-        } else {
-            console.log('timerEnd.endtime', timerEnd.endtime)
         }
-
 
         try {
             if (timerEnd.endtime > dayjs().format('YYYY-MM-DDTHH:mm:ss')) {
@@ -157,30 +154,36 @@ export const WordMemory = (props: Props) => {
     !isLoaded ?
      <>Loading... </> :
     <Grid2 container>
-    {/* <Grid2 size={ { sm: 12, md: 6 } }>
-        <div className='word'>{cWord.translate1}</div>
-    </Grid2> */}
+     <Grid2 size={ { sm: 2 }} sx={{ px: '10px'}} >
 
 
 {
-    isDisabled ?
-<Box sx={bgStyles}><Button variant='contained'
+    (dayjs(cntDown).toDate() < new Date()) ?
+<Button variant='contained'  sx={{width: '100%'}}
     onClick={ async () => {
-        const t =  await api.SetTimer(tokens.accessToken)
+        const t =  await api.SetTimer(tokens.accessToken, 'start')
         const newTime = dayjs(t.endtime).format('YYYY-MM-DDTHH:mm:ss')
         console.log('ttimer', newTime)
         setCntDown(newTime)
         GetTimer()
-}}>Start</Button></Box>
+}}>Start</Button>
 :
-<Button variant='contained' color='primary' title='End'>End</Button>
-
+<Button variant='contained' color='primary' title='End' sx={{width: '100%'}}
+onClick={ async () => {
+    const t =  await api.SetTimer(tokens.accessToken, 'stop')
+        const newTime = dayjs(t.endtime).format('YYYY-MM-DDTHH:mm:ss')
+        console.log('ttimer', newTime)
+        setCntDown(newTime)
+}}
+>End</Button>
 }
+</Grid2>
+<Grid2 size={ { sm: 8 } } sx={{ px: '10px'}}>
+<Box sx={bgStyles}><Countdown targetDate={cntDown} /></Box>
+
+</Grid2>
 
 
-
-
-    <Box sx={bgStyles}><Countdown targetDate={cntDown} /></Box>
 
     <Grid2 size={ { md: 1} } ></Grid2>
 

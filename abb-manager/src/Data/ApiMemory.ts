@@ -13,11 +13,11 @@ export class ApiMemory {
 
     }
 
-    SetTimer = async (token: string):Promise<ICountDown> => {
+    SetTimer = async (token: string, option: 'start' | 'stop' ):Promise<ICountDown> => {
         const t = parseJwt(token)
         const userName = t['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']
         return new Promise<ICountDown>( (resolve, reject) => {
-            const url = `https://localhost:7168/api/Countdowns?username=${userName}`
+            const url = `https://localhost:7168/api/Countdowns`
             console.log('url', url)
             const requestOptions = {
                 method: 'POST',
@@ -25,7 +25,7 @@ export class ApiMemory {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({username: userName})
+                body: JSON.stringify({userName: userName, action: option})
             }
             fetch(url, requestOptions)
                 .then(res => res.json())

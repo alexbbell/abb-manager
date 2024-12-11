@@ -10,7 +10,7 @@ const siteObjectsDev:IConstant = {
 }
 
 const siteObjectsProd:IConstant = {
-    mainApiUrl: "https://alexey.beliaeff.ru:5001/api/"
+    mainApiUrl: "https://beliaeff.ru/api/"
 }
 
 export const SiteVars: IConstant = (process.env.REACT_APP_ENV === "dev") ? siteObjectsDev : siteObjectsProd

@@ -11,8 +11,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ClearIcon from '@mui/icons-material/Clear';
 import { ApiMemory } from '../../Data/ApiMemory';
 import dayjs from 'dayjs';
-import { ITokens } from '../../Data/interfaces';
-import { parseJwt } from '../../Helpers/AuthFunc';
+import { ICountDown, ITokens } from '../../Data/interfaces';
 
 type BtnColor = 'green' | 'blue' | 'red'
 type Props = {
@@ -21,7 +20,7 @@ type Props = {
 export const WordMemory = (props: Props) => {
     const items = words
     const arFuncs = new ArrayFuncs()
-    const api = new ApiMemory(process.env.REACT_APP_ENV??'')
+    const api = new ApiMemory()
     const [cntDown, setCntDown] = React.useState<string>( (new Date()).toDateString())
     const [cWord, setCWord] = React.useState<IWord>( WordEmpty);
     const [altWords, setAltWords] = React.useState<IWordButton[]>([]);
@@ -44,13 +43,23 @@ export const WordMemory = (props: Props) => {
 
 
     const GetTimer = async():Promise<void> => {
-        const timerEnd = await api.GetTimerEnd(tokens.accessToken)
-        console.log('timerEnd', timerEnd)
-        if(timerEnd.endtime === '') {
-            return
+
+        let  timerEnd: ICountDown =  {endtime: ''}
+        try {
+            timerEnd = await api.GetTimerEnd(tokens.accessToken)
+        } catch( err) {
+            console.error(err)
         }
 
+
         try {
+
+            if(timerEnd.endtime === '') {
+                setIsLoaded(true)
+                setIsDisabled(true)
+                return
+            }
+
             if (timerEnd.endtime > dayjs().format('YYYY-MM-DDTHH:mm:ss')) {
                 console.log('less')
                 setIsDisabled(false)

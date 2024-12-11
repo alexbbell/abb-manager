@@ -1,4 +1,3 @@
-import { error } from "console"
 import { SiteVars } from "./constants"
 import { IAccount, IAuthResponse, IBaseItem, IBlog, IBlogReponse, ICountDown, IMoveFiles, IOperationResult } from "./interfaces"
 import axios from "axios"
@@ -6,19 +5,16 @@ import { parseJwt } from "../Helpers/AuthFunc"
 
 export class ApiMemory {
 
-    private _catUrl = `${SiteVars.mainApiUrl}Categories`
     private _apiUrl = `${SiteVars.mainApiUrl}`
+    private _cntdwnUrl = `${SiteVars.mainApiUrl}Countdowns/`
 
-    constructor(environment: string) {
-
-    }
 
     SetTimer = async (token: string, option: 'start' | 'stop' ):Promise<ICountDown> => {
         const t = parseJwt(token)
         const userName = t['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']
         return new Promise<ICountDown>( (resolve, reject) => {
-            const url = `https://localhost:7168/api/Countdowns`
-            console.log('url', url)
+
+
             const requestOptions = {
                 method: 'POST',
                 headers: {
@@ -27,7 +23,7 @@ export class ApiMemory {
                 },
                 body: JSON.stringify({userName: userName, action: option})
             }
-            fetch(url, requestOptions)
+            fetch(this._cntdwnUrl, requestOptions)
                 .then(res => res.json())
                 .then(result => {
                     console.log('res1', result)
@@ -44,7 +40,7 @@ export class ApiMemory {
         const userName = t['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']
 
         return new Promise<ICountDown>( (resolve, reject) => {
-            const url = `${this._apiUrl}Countdowns/${userName}`
+            const url = `${this._cntdwnUrl}${userName}`
             console.log('url', url)
             fetch(url)
                 .then(res => res.json())

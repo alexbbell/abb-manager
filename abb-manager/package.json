@@ -30,7 +30,8 @@
   "scripts": {
     "start": "react-scripts start",
     "startDev": "cross-env REACT_APP_ENV=dev react-scripts start",
-    "build": "react-scripts build",
+    "build": "cross-env REACT_APP_ENV=dev react-scripts build",
+    "build Prod": "cross-env REACT_APP_ENV=prod react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "startAPI": "D:\\Projects\\AbbContentEditor\\AbbContentEditor>"

@@ -6,30 +6,32 @@ import { Layout } from './Components/Layout/Layout';
 import { Dashboard } from './Pages/Dashboard/Dashboard';
 import { EditBlog } from './Pages/EditBlog/EditBlog';
 import { ThemeProvider } from '@mui/material';
-import store from './Store/store'
+import store, {persistor} from './Store/store'
 import { theme } from './theme';
 import { Provider } from 'react-redux';
 import { WordMemPage } from './Pages/WordMemPage/WordMemPage';
-
+import { PersistGate} from 'redux-persist/integration/react'
 
 function App() {
   return (
     <div className="App">
-      <Provider store={ store }>
-      <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <ThemeProvider theme={theme}>
 
-      <Routes >
-        <Route path="/" element={<Layout />}>
+            <Routes >
+              <Route path="/" element={<Layout />}>
 
-        <Route path="/" element={<StartPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard/:id" element={<EditBlog isNew={false} />} />
-        <Route path="/dashboard/new" element={<EditBlog isNew={true} />} />
-        <Route path="/memory/" element={<WordMemPage />} />
-        </Route>
-      </Routes>
+                <Route path="/" element={<StartPage />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/:id" element={<EditBlog isNew={false} />} />
+                <Route path="/dashboard/new" element={<EditBlog isNew={true} />} />
+                <Route path="/memory/" element={<WordMemPage />} />
+              </Route>
+            </Routes>
 
-      </ThemeProvider>
+          </ThemeProvider>
+        </PersistGate>
       </Provider>
     </div>
   );

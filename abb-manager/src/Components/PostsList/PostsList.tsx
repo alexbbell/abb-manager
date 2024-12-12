@@ -7,6 +7,7 @@ import { Box, Button, Modal, Pagination } from '@mui/material';
 import { modalStyle } from '../../Data/constants';
 import { useAppDispatch, useAppSelector } from '../../Store/hooks'
 import { saveCurrentPage } from '../../Store/counterSlice';
+import { persistor, RootState } from '../../Store/store';
 
 
 type Props = {
@@ -20,7 +21,7 @@ export const PostsList = (props: Props) => {
 
     const dispatch = useAppDispatch()
 
-    const page = useAppSelector( state => state.counter.currentPage)
+    const page = useAppSelector( (state: RootState) => state.counter.currentPage)
     //const [page, setPage] = React.useState(1)
     const [removedItemsCounter, setRemovedItemsCounter] = React.useState(0)
     const apiBlogServices = new ApiBlogServices()

@@ -12,6 +12,9 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { ApiMemory } from '../../Data/ApiMemory';
 import dayjs from 'dayjs';
 import { ICountDown, ITokens } from '../../Data/interfaces';
+import { addItem,  cleanItems} from './../../Store/answerSlice'
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../Store/store';
 
 type BtnColor = 'green' | 'blue' | 'red'
 type Props = {
@@ -28,9 +31,17 @@ export const WordMemory = (props: Props) => {
     const [isLoaded, setIsLoaded] = React.useState(false)
     const [isAnswerCorrect, setIsAnswerCorrect] = React.useState(false)
     const [maxAttempts, setMaxAttempts] = React.useState<number>(10);
-    const [answers, setAnswers] = React.useState<IAnswer[]>([])
+
+
+    // comment for redux
+    // const [answers, setAnswers] = React.useState<IAnswer[]>([])
+
+    const answers = useSelector((state: RootState) => state.answers.answers) as IAnswer[];
+    const dispatch = useDispatch();
+
+
     const [colorResults, setColorResults ] = React.useState<BtnColor[]>([]);
-    const delay: number = 2000
+    const delay: number = 1000
     const [isDisabled, setIsDisabled] = React.useState(false)
 
     const [timer, setTimer] = React.useState<number>(delay)
@@ -126,14 +137,19 @@ export const WordMemory = (props: Props) => {
             console.log({colors})
             setColorResults(colors)
             const newAnswers = [...answers]
-            newAnswers.push( { word: cWord, success: result})
-            altWords[index].answerSuccess = result
+            const newAnswer:IAnswer = { word: cWord, success: result}
+            newAnswers.push( )
+
+            const tmpaltWord = {...altWords[index]}
+            tmpaltWord.answerSuccess = result
+            altWords[index] = tmpaltWord
             console.log('altWords', altWords)
                 setAltWords( altWords)
 
             setTimeout(() => {
 
-                setAnswers(newAnswers)
+                //setAnswers(newAnswers)
+                dispatch(addItem(newAnswer))
                 setTimer(delay)
                 setAttempt(attempt + 1)
                 setColorResults([])
@@ -240,7 +256,7 @@ onClick={ async () => {
 
                 answers.map( (a, index) => {
                         return (
-                        <TableRow key={`hd_${a.word.translate1}${a.success}`}>
+                        <TableRow key={`hd_${a.word.translate1}${index}${a.success}`}>
                             <TableCell>{index+1}</TableCell>
                             <TableCell>{a.word.translate1}</TableCell>
                             <TableCell>{a.word.translate2} </TableCell>

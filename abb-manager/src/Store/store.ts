@@ -1,13 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { counterSlice } from './counterSlice'
+import { answerSlice } from './answerSlice'
 
 
 // ...
 
 const store = configureStore({
   reducer: {
-    counter: counterSlice.reducer
-
+    counter: counterSlice.reducer,
+    answers: answerSlice.reducer
     // comments: commentsReducer,
     // users: usersReducer,
   },

@@ -21,10 +21,81 @@ export interface IAnswer {
 // Вот пример на 100 слов уровня A2 на немецком с переводом на русский:
 
 export const words: IWord[] = [
-    {id: 1, translate1: 'Spiegel', translate2: 'Зеркало'},
-    {id: 2, translate1: 'Sinnlos', translate2: 'Бессмысленный'},
-    {id: 3, translate1: 'Außerlich', translate2: 'Внешний'},
-    {id: 4, translate1: 'Ähnlich', translate2: 'Похожий'},
+
+    {
+        id: 1,
+        translate1: 'Feststellen',
+        translate3: 'Notice',
+        translate2: 'Констатировать, отмечать'
+    },
+
+
+    {
+        id: 2,
+        translate1: "Kiste",
+        translate2: "Ящик",
+        translate3: "Box"
+    },
+    {
+        id: 3,
+        translate1: "Zahlwort",
+        translate2: "Числительное",
+        translate3: "Number word"
+    },
+    {
+        id: 4,
+        translate1: "weglassen",
+        translate2: "Пропустить",
+        translate3: "Omit"
+    },
+    {
+        id: 5,
+        translate1: "Füllwörter",
+        translate2: "Междометия",
+        translate3: "Filler words"
+    },
+    {
+        id: 6,
+        translate1: "Duden",
+        translate2: "Чувак",
+        translate3: "Duden"
+    },
+    {
+        id: 7,
+        translate1: "Aussage",
+        translate2: "Заявление",
+        translate3: "Statement"
+    },
+    {
+        id: 8,
+        translate1: "Aussagewert",
+        translate2: "Значение",
+        translate3: "Statement value"
+    },
+    {
+        id: 9,
+        translate1: "Versuchen",
+        translate2: "Пробовать",
+        translate3: "Attempt"
+    },
+    {
+        id: 10,
+        translate1: "Untersuchung",
+        translate2: "Исследование",
+        translate3: "Investigation"
+    },
+    {
+        id: 11,
+        translate1: "Milieus",
+        translate2: "Среда",
+        translate3: "Milieus"
+    }
+
+
+    // {id: 1, translate1: 'Spiegel', translate2: 'Зеркало'},
+    // {id: 2, translate1: 'Sinnlos', translate2: 'Бессмысленный'},
+    // {id: 3, translate1: 'Außerlich', translate2: 'Внешний'},
+    // {id: 4, translate1: 'Ähnlich', translate2: 'Похожий'},
     // {id: 5, translate1: 'Bestellen', translate2: 'Заказывать'},
     // {id: 6, translate1: 'Erinnern', translate2: 'Вспоминать'},
     // {id: 7, translate1: 'Gefährlich', translate2: 'Опасный'},

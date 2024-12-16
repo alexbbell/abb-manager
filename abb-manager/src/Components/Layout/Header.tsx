@@ -56,8 +56,8 @@ export const Header = (props: Props) => {
                 break;
             case 'Logout':
                 console.log('Logout')
-                LogOut()
                 setTimeout( () => {
+                  LogOut()
                   navigate('/')
 
                 }, 1000)

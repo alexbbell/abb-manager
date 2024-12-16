@@ -15,10 +15,12 @@ export const StartPage = () => {
         const tokens: ITokens = JSON.parse(isTokenStr)
         console.log('isTokenStr', tokens)
         try {
-            const jwt:any = jwtDecode(tokens.accessToken)
-            const dexp = dayjs(jwt.exp).format()
-            console.log(jwt.exp, dexp)
-            setAccessToken (tokens.accessToken)
+            if(tokens.accessToken) {
+                const jwt:any = jwtDecode(tokens.accessToken)
+                const dexp = dayjs(jwt.exp).format()
+                console.log(jwt.exp, dexp)
+                setAccessToken (tokens.accessToken)
+            }
         } catch (err) {
             console.error(err)
         }

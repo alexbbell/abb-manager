@@ -198,6 +198,7 @@ onClick={ async () => {
     const t =  await api.SetTimer(tokens.accessToken, 'stop')
         const newTime = dayjs(t.endtime).format('YYYY-MM-DDTHH:mm:ss')
         console.log('ttimer', newTime)
+
         setCntDown(newTime)
 }}
 >End</Button>

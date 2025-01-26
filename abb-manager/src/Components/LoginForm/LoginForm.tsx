@@ -98,17 +98,16 @@ export const LoginForm = () => {
     }
 
     return (
-        <Card variant="outlined" sx={{
-            width: '300px', background: '#000', p:1,
-            display: 'flex',
-    flexDirection: 'column',
-    alignSelf: 'center',
+      <Card variant="outlined" sx={{
+        width: '300px', background: '#000', p: 1, color: '#FFF',
+        display: 'flex',
+        flexDirection: 'column',
+        alignSelf: 'center',
 
-    padding: '5px',
-    boxShadow:
-      'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-
-            }}>
+        padding: '5px',
+        boxShadow:
+          'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
+      }}>
         LOGIN FORM
 
         <Box sx={{display: 'flex', flexDirection: 'column',  gap: '10px', }}>
@@ -144,13 +143,14 @@ export const LoginForm = () => {
             } }>Login</Button>
 
 <ForgotPassword open={openForgot} handleClose={ async () => handleForgotClose()} />
-<SignUp open={openRegister} handleClose={ async () => handleRegisterClose()} />
+{/* <SignUp open={openRegister} handleClose={ async () => handleRegisterClose()} /> */}
 
 <Typography sx={{ textAlign: 'center', color: '#FFF' }}>
           Don&apos;t have an account?{' '}
           <span>
             <Link
-              href="/material-ui/getting-started/templates/sign-in/"
+              href="/signup/"
+
               variant="body2"
               sx={{ alignSelf: 'center' }}
             >

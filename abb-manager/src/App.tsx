@@ -11,6 +11,7 @@ import { theme } from './theme';
 import { Provider } from 'react-redux';
 import { WordMemPage } from './Pages/WordMemPage/WordMemPage';
 import { PersistGate} from 'redux-persist/integration/react'
+import { SignupPage } from './Pages/SignupPage/SignupPage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/dashboard/:id" element={<EditBlog isNew={false} />} />
                 <Route path="/dashboard/new" element={<EditBlog isNew={true} />} />
                 <Route path="/memory/" element={<WordMemPage />} />
+                <Route path="/signup/" element={<SignupPage />} />
               </Route>
             </Routes>
 

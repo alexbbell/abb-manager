@@ -21,7 +21,7 @@ type Props = {
 
 };
 export const WordMemory = (props: Props) => {
-    const items = words
+    // const items = words
     const arFuncs = new ArrayFuncs()
     const api = new ApiMemory()
     const [cntDown, setCntDown] = React.useState<string>( (new Date()).toDateString())
@@ -49,7 +49,7 @@ export const WordMemory = (props: Props) => {
     const isTokenStr:string = localStorage.getItem('tokens')?? '{}'
     const tokens: ITokens = JSON.parse(isTokenStr)
 
-
+    const [items, setItems ] = React.useState<IWord[]>([])
     console.log({tokens})
 
 
@@ -82,30 +82,38 @@ export const WordMemory = (props: Props) => {
         } catch (ex) {
             console.error(ex)
         }
-        setIsLoaded(true)
     }
 
     React.useEffect( () => {
-        GetTimer()
-        const item:IWord = items[Math.floor(Math.random()*items.length)];
-        const itemBtns:IWordButton[] = items.map( (x) => {
-            return {
-                ...x,
-                answerSuccess: false
-            }
+        GetTimer().then( res => {
+            setIsLoaded(true)
         })
-        setTimer(delay)
-        setCWord(item)
-        setAltWords(fillAnswers2Choose(item))
+
+        api.GetWordsFromCollection().then( res => {
+            const items = res.words
+            console.log('items', items)
+            setItems(items)
+            const item:IWord = items[Math.floor(Math.random()*items.length)];
+            const itemBtns:IWordButton[] = items.map( (x) => {
+                return {
+                    ...x,
+                    answerSuccess: false
+                }
+            })
+            setTimer(delay)
+            setCWord(item)
+            setAltWords(fillAnswers2Choose(item, items))
+        })
+
 
     }, [attempt])
 
-    const fillAnswers2Choose = (correctItem:IWord): IWordButton[] => {
+    const fillAnswers2Choose = (correctItem:IWord, allItems: IWord[]): IWordButton[] => {
         let allVariants:IWordButton[] = []
         // add to the start of the array the correct answer
         allVariants.push( correctItem as IWordButton )
         while (allVariants.length < 4) {
-            const newValue = items[Math.floor(Math.random()*items.length)];
+            const newValue = allItems[Math.floor(Math.random()*allItems.length)];
             if (allVariants.filter(x => x === newValue).length === 0) allVariants.push(newValue as IWordButton)
           }
         allVariants = arFuncs.shuffleArray(allVariants)
@@ -132,6 +140,7 @@ export const WordMemory = (props: Props) => {
 
             setIsDisabled(true)
             const result = checkIfCorrect(cWord, word)
+
             const colors: BtnColor[]= []
             colors[index] = (result && word.id === cWord.id) ? 'green' : 'red'
             console.log({colors})

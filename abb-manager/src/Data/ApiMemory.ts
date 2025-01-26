@@ -2,6 +2,10 @@ import { SiteVars } from "./constants"
 import { IAccount, IAuthResponse, IBaseItem, IBlog, IBlogReponse, ICountDown, IMoveFiles, IOperationResult } from "./interfaces"
 import axios from "axios"
 import { parseJwt } from "../Helpers/AuthFunc"
+import { IWord, IWordsResponse, words } from "../Components/WordMemory/data"
+import { resolve } from "path"
+import { isErrored } from "stream"
+
 
 export class ApiMemory {
 
@@ -13,8 +17,6 @@ export class ApiMemory {
         const t = parseJwt(token)
         const userName = t['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']
         return new Promise<ICountDown>( (resolve, reject) => {
-
-
             const requestOptions = {
                 method: 'POST',
                 headers: {
@@ -51,6 +53,33 @@ export class ApiMemory {
                 console.error(err)
                 reject( { endtime: ''})
             })
+        })
+    }
+
+
+    SaveHistory = async (token: string, word: IWord) => {
+        const t = parseJwt(token)
+        const userName = t['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']
+        const url: string = `${this._cntdwnUrl}`
+    }
+
+
+    GetWordsFromCollection = async (): Promise<IWordsResponse> => {
+        const url = `${this._apiUrl}Word/collections/8`
+        return new Promise<IWordsResponse>((resolve, reject) => {
+
+            axios(url)
+                .then(result => {
+                    console.log('restul', result.data)
+                    const t: IWordsResponse = {
+                        words: result.data[0].WordsCollection,
+                    }
+                    console.log('restul ttt', t)
+                    resolve(t)
+                }).catch(err => {
+                    console.error(err)
+                    reject({ words: [], isError: true, errorText: err })
+                })
         })
     }
 

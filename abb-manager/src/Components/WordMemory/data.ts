@@ -9,6 +9,11 @@ export const WordEmpty: IWord = {
     translate1: '',
     translate2: '',
 }
+export interface IWordsResponse {
+    words: IWord[],
+    isError?: boolean,
+    errorText?: string
+}
 
 export interface IWordButton extends IWord {
     answerSuccess: boolean

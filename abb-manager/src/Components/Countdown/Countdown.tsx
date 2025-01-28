@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 
 interface CountdownProps {
   targetDate: string; // ISO date string (e.g., "2024-12-31T23:59:59")
+  onTimeOut: () => void;
+  isActive: boolean; // Whether the timer should run
 }
 
 interface TimeLeft {
@@ -11,7 +13,7 @@ interface TimeLeft {
   seconds: number;
 }
 
-const Countdown: React.FC<CountdownProps> = ({ targetDate }) => {
+const Countdown: React.FC<CountdownProps> = ({ targetDate, onTimeOut, isActive }) => {
   const calculateTimeLeft = (): TimeLeft => {
     const now = new Date();
     const target = new Date(targetDate);
@@ -32,20 +34,36 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate }) => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft());
 
   useEffect(() => {
+    if (!isActive) return; // Timer only runs if isActive is true
+
+    // Immediately update the timer when it starts
+    setTimeLeft(calculateTimeLeft());
+
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
+      const newTimeLeft = calculateTimeLeft();
+      setTimeLeft(newTimeLeft);
+
+      if (
+        newTimeLeft.days === 0 &&
+        newTimeLeft.hours === 0 &&
+        newTimeLeft.minutes === 0 &&
+        newTimeLeft.seconds === 0
+      ) {
+        clearInterval(timer); // Stop timer
+        onTimeOut(); // Notify parent when time runs out
+      }
     }, 1000);
 
-    return () => clearInterval(timer); // Cleanup on component unmount
-  }, [targetDate]);
+    return () => clearInterval(timer); // Cleanup on component unmount or isActive change
+  }, [isActive, targetDate, onTimeOut]);
 
   return (
     <div>
-      {timeLeft.days === 0 &&
+      { (timeLeft.days === 0 &&
       timeLeft.hours === 0 &&
       timeLeft.minutes === 0 &&
-      timeLeft.seconds === 0 ? (
-        <span>Time's up!</span>
+      timeLeft.seconds === 0) || !isActive ? (
+        <div>Time is up!</div>
       ) : (
         <div>
           <span>{timeLeft.days} days </span>

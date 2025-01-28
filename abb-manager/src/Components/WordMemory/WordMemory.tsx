@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import './WordMemory.css'
-import { IAnswer, IWord, IWordButton, WordEmpty, words } from './data';
+import { IAnswer, IWord, IWordButton, WordEmpty } from './data';
 import Grid2 from '@mui/material/Grid2';
 import { ArrayFuncs }  from './../../Helpers/ArrayFuncs'
 import Box from '@mui/material/Box';
@@ -29,9 +29,9 @@ export const WordMemory = (props: Props) => {
     const [altWords, setAltWords] = React.useState<IWordButton[]>([]);
     const [attempt, setAttempt] = React.useState<number>(0);
     const [isLoaded, setIsLoaded] = React.useState(false)
-    const [isAnswerCorrect, setIsAnswerCorrect] = React.useState(false)
-    const [maxAttempts, setMaxAttempts] = React.useState<number>(10);
-
+    // const [isAnswerCorrect, setIsAnswerCorrect] = React.useState(false)
+    const maxAttempts = 20;
+    const [wordsLoaded, setWordsLoaded] = React.useState<boolean>(false);
 
     // comment for redux
     // const [answers, setAnswers] = React.useState<IAnswer[]>([])
@@ -50,18 +50,19 @@ export const WordMemory = (props: Props) => {
     const tokens: ITokens = JSON.parse(isTokenStr)
 
     const [items, setItems ] = React.useState<IWord[]>([])
-    console.log({tokens})
+    const [timerOut, setTimerOut] = React.useState(true)
 
+    const handleTimeOut = () => {
+        setTimerOut(true)
+      };
 
     const GetTimer = async():Promise<void> => {
-
         let  timerEnd: ICountDown =  {endtime: ''}
         try {
             timerEnd = await api.GetTimerEnd(tokens.accessToken)
         } catch( err) {
             console.error(err)
         }
-
 
         try {
 
@@ -72,10 +73,8 @@ export const WordMemory = (props: Props) => {
             }
 
             if (timerEnd.endtime > dayjs().format('YYYY-MM-DDTHH:mm:ss')) {
-                console.log('less')
                 setIsDisabled(false)
             } else {
-                console.log('more')
                 setIsDisabled(true)
             }
             setCntDown(timerEnd.endtime)
@@ -84,29 +83,34 @@ export const WordMemory = (props: Props) => {
         }
     }
 
+    const InitialWordLoad = async():Promise<void> => {
+        api.GetWordsFromCollection().then( res => {
+            const items = res.words
+            setItems(items)
+            setWordsLoaded(true)
+         })
+    }
+
+    const SetWordCombination = async() : Promise<void> => {
+        const item:IWord = items[Math.floor(Math.random()*items.length)];
+        const itemBtns:IWordButton[] = items.map( (x) => {
+            return {
+                ...x,
+                answerSuccess: false
+            }
+        })
+        setAltWords(fillAnswers2Choose(item, items))
+        setTimer(delay)
+        setCWord(item)
+
+    }
+
     React.useEffect( () => {
+        if(!wordsLoaded) InitialWordLoad()
         GetTimer().then( res => {
             setIsLoaded(true)
         })
-
-        api.GetWordsFromCollection().then( res => {
-            const items = res.words
-            console.log('items', items)
-            setItems(items)
-            const item:IWord = items[Math.floor(Math.random()*items.length)];
-            const itemBtns:IWordButton[] = items.map( (x) => {
-                return {
-                    ...x,
-                    answerSuccess: false
-                }
-            })
-            setTimer(delay)
-            setCWord(item)
-            setAltWords(fillAnswers2Choose(item, items))
-        })
-
-
-    }, [attempt])
+    }, [cntDown])
 
     const fillAnswers2Choose = (correctItem:IWord, allItems: IWord[]): IWordButton[] => {
         let allVariants:IWordButton[] = []
@@ -135,7 +139,7 @@ export const WordMemory = (props: Props) => {
 
         <button key={`btn${word.translate1}`}
         className={`button word ${colorResults[index]} item${index+1}`}
-        disabled={isDisabled}
+        disabled={isDisabled || timerOut}
         onClick={ ()=> {
 
             setIsDisabled(true)
@@ -156,6 +160,7 @@ export const WordMemory = (props: Props) => {
                 setAltWords( altWords)
 
             setTimeout(() => {
+                SetWordCombination()
 
                 //setAnswers(newAnswers)
                 dispatch(addItem(newAnswer))
@@ -189,33 +194,32 @@ export const WordMemory = (props: Props) => {
      <>Loading... </> :
     <Grid2 container>
      <Grid2 size={ { sm: 2 }} sx={{ px: '10px'}} >
-
-
 {
-    (dayjs(cntDown).toDate() < new Date()) ?
+    //(dayjs(cntDown).toDate() < dayjs().toDate()) ?
+    (timerOut) ?
 <Button variant='contained'  sx={{width: '100%'}}
     onClick={ async () => {
         const t =  await api.SetTimer(tokens.accessToken, 'start')
         const newTime = dayjs(t.endtime).format('YYYY-MM-DDTHH:mm:ss')
-        console.log('ttimer', newTime)
+        dispatch(cleanItems())
+        setTimerOut(false)
         setCntDown(newTime)
         GetTimer()
+        SetWordCombination()
 }}>Start</Button>
 :
 <Button variant='contained' color='primary' title='End' sx={{width: '100%'}}
 onClick={ async () => {
     const t =  await api.SetTimer(tokens.accessToken, 'stop')
         const newTime = dayjs(t.endtime).format('YYYY-MM-DDTHH:mm:ss')
-        console.log('ttimer', newTime)
-
+        setTimerOut(true)
         setCntDown(newTime)
 }}
 >End</Button>
 }
 </Grid2>
 <Grid2 size={ { sm: 8 } } sx={{ px: '10px'}}>
-<Box sx={bgStyles}><Countdown targetDate={cntDown} /></Box>
-
+<Box sx={bgStyles}><Countdown targetDate={cntDown} onTimeOut={handleTimeOut} isActive={!timerOut} /></Box>
 </Grid2>
 
 
@@ -224,16 +228,19 @@ onClick={ async () => {
 
     <Grid2 size={ { sm: 12, md: 12 } } >
 
-    <div  className='gcont'>
-
-        <div className='wordCenter question'>{cWord.translate1}</div>
+    {
+        !timerOut ?
+        <div className='gcont'>
+            <div className='wordCenter question'>{cWord.translate1}</div>
             {
-            altWords.map( (word, index) => {
-                return (
-                    renderButton(word, index)
-                )
-            })
-        }</div>
+                altWords.map((word, index) => {
+                    return (
+                        renderButton(word, index)
+                    )
+                })
+            }
+        </div> : <Box sx={bgStyles}>Press Start to start the game</Box>
+    }
     </Grid2>
 
     <Grid2 size={ { md: 1} } ></Grid2>

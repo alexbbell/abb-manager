@@ -1,10 +1,8 @@
 import { SiteVars } from "./constants"
-import { IAccount, IAuthResponse, IBaseItem, IBlog, IBlogReponse, ICountDown, IMoveFiles, IOperationResult } from "./interfaces"
+import { ICountDown } from "./interfaces"
 import axios from "axios"
 import { parseJwt } from "../Helpers/AuthFunc"
-import { IWord, IWordsResponse, words } from "../Components/WordMemory/data"
-import { resolve } from "path"
-import { isErrored } from "stream"
+import { IWord, IWordsResponse } from "../Components/WordMemory/data"
 
 
 export class ApiMemory {
@@ -28,7 +26,6 @@ export class ApiMemory {
             fetch(this._cntdwnUrl, requestOptions)
                 .then(res => res.json())
                 .then(result => {
-                    console.log('res1', result)
                     resolve(result)
                 }).catch(err => {
                 console.error(err)
@@ -43,7 +40,6 @@ export class ApiMemory {
 
         return new Promise<ICountDown>( (resolve, reject) => {
             const url = `${this._cntdwnUrl}${userName}`
-            console.log('url', url)
             fetch(url)
                 .then(res => res.json())
                 .then(result => {
@@ -70,11 +66,9 @@ export class ApiMemory {
 
             axios(url)
                 .then(result => {
-                    console.log('restul', result.data)
                     const t: IWordsResponse = {
                         words: result.data[0].WordsCollection,
                     }
-                    console.log('restul ttt', t)
                     resolve(t)
                 }).catch(err => {
                     console.error(err)

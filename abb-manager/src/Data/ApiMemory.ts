@@ -61,7 +61,7 @@ export class ApiMemory {
 
 
     GetWordsFromCollection = async (): Promise<IWordsResponse> => {
-        const url = `${this._apiUrl}Word/collections/8`
+        const url = `${this._apiUrl}Word/collections/2`
         return new Promise<IWordsResponse>((resolve, reject) => {
 
             axios(url)

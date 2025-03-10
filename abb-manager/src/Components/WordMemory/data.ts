@@ -23,6 +23,19 @@ export interface IAnswer {
     success?: boolean,
 }
 
+export interface IGameReport {
+    user: string,
+    theTime: number, 
+    attempts: number, 
+    correctAnswers: number
+}
+export const emptyGameReport:IGameReport = {
+    user: "",
+    theTime: 0,
+    attempts: 0,
+    correctAnswers: 0
+}
+
 // Вот пример на 100 слов уровня A2 на немецком с переводом на русский:
 
 export const words: IWord[] = [

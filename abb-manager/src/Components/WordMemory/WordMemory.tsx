@@ -62,6 +62,7 @@ export const WordMemory = (props: Props) => {
             timerEnd = await api.GetTimerEnd(tokens.accessToken)
         } catch( err) {
             console.error(err)
+            timerEnd = { endtime: new Date().toString()}
         }
 
         try {
@@ -84,10 +85,13 @@ export const WordMemory = (props: Props) => {
     }
 
     const InitialWordLoad = async():Promise<void> => {
-        api.GetWordsFromCollection().then( res => {
+        api.GetWordsFromCollection(1).then( res => {
             const items = res.words
             setItems(items)
             setWordsLoaded(true)
+         }).catch(err => {
+            console.error(err)
+            setItems([])
          })
     }
 
@@ -164,6 +168,8 @@ export const WordMemory = (props: Props) => {
 
                 //setAnswers(newAnswers)
                 dispatch(addItem(newAnswer))
+                
+                api.SaveHistory(tokens.accessToken, newAnswer)
                 setTimer(delay)
                 setAttempt(attempt + 1)
                 setColorResults([])

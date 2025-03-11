@@ -36,6 +36,8 @@ export const emptyGameReport:IGameReport = {
     correctAnswers: 0
 }
 
+
+
 // Вот пример на 100 слов уровня A2 на немецком с переводом на русский:
 
 export const words: IWord[] = [

@@ -5,7 +5,7 @@ import { IAnswer, IWord, IWordButton, WordEmpty } from './data';
 import Grid2 from '@mui/material/Grid2';
 import { ArrayFuncs }  from './../../Helpers/ArrayFuncs'
 import Box from '@mui/material/Box';
-import { Button, Paper, SxProps, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme } from '@mui/material';
+import { Button, Dialog, Paper, SxProps, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme } from '@mui/material';
 import Countdown from '../Countdown/Countdown';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -15,7 +15,14 @@ import { ICountDown, ITokens } from '../../Data/interfaces';
 import { addItem,  cleanItems} from './../../Store/answerSlice'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../Store/store';
+import WordReport from '../WordReport/WordReport';
 
+export const bgStyles: SxProps<Theme> = {
+    p: 1,
+    background: "rgba(0, 0, 0, 0.3)",
+    color: "white"
+  };
+  
 type BtnColor = 'green' | 'blue' | 'red'
 type Props = {
 
@@ -51,6 +58,13 @@ export const WordMemory = (props: Props) => {
 
     const [items, setItems ] = React.useState<IWord[]>([])
     const [timerOut, setTimerOut] = React.useState(true)
+    const [showDialog, setShowDialog] = React.useState(false)
+    
+    const dialogClose = React.useCallback ( () =>{
+        setShowDialog(false)
+    }, [showDialog])
+
+
 
     const handleTimeOut = () => {
         setTimerOut(true)
@@ -132,11 +146,7 @@ export const WordMemory = (props: Props) => {
         return obj1.id === obj2.id
     }
 
-    const bgStyles: SxProps<Theme> = {
-        p: 1,
-        background: "rgba(0, 0, 0, 0.3)",
-        color: "white"
-      };
+    
 
       const renderButton = (word:IWordButton, index:number):JSX.Element  => {
         return (
@@ -220,6 +230,7 @@ onClick={ async () => {
         const newTime = dayjs(t.endtime).format('YYYY-MM-DDTHH:mm:ss')
         setTimerOut(true)
         setCntDown(newTime)
+        setShowDialog(true)
 }}
 >End</Button>
 }
@@ -258,6 +269,14 @@ onClick={ async () => {
     </Grid2>
     <Grid2 size={ 2 } ></Grid2>
 
+<Dialog open={showDialog} 
+    onClose={() => setShowDialog(false)} 
+    style={{ background: 'rgba(0, 0, 0, 0.1) '}}
+
+>
+    <WordReport showDialog={ dialogClose} />
+
+</Dialog>
 
     <Grid2 container>
         <Grid2 sx={bgStyles} size={12}>

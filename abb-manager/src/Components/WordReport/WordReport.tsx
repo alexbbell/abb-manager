@@ -2,16 +2,23 @@ import React, { useEffect } from 'react'
 import { ApiMemory } from '../../Data/ApiMemory'
 import { ITokens } from '../../Data/interfaces'
 import { emptyGameReport, IGameReport } from '../WordMemory/data'
+import Box from '@mui/material/Box'
+import { Button, Divider } from '@mui/material'
 
-export default function WordReport() {
+
+type Props = {
+    showDialog: () => void,
+}
+export default function WordReport(props:Props) {
     const [report, setReport ] = React.useState<IGameReport>(emptyGameReport)
     const api = new ApiMemory()
     const isTokenStr:string = localStorage.getItem('tokens')?? '{}'
     const tokens: ITokens = JSON.parse(isTokenStr)
-
+    const closeClick = () => {
+        props.showDialog()
+    }
     useEffect( () => {
         api.RenderGameReport(tokens.accessToken).then(res => {
-            console.log('r', res)
             setReport(res)
         }).catch(err => {
             console.error(err)
@@ -20,15 +27,25 @@ export default function WordReport() {
     }, [])
 
   return (
-    <div style={{ background: '#FFF'}}>
-        <h1>WordReport</h1>
-        <div> Attemps:  {report.attempts}</div>
-        <div> The time:  {report.theTime}</div>
-        <div> Correct answers:  {report.correctAnswers}</div>
-        <div> Incorrect answers:  {report.attempts - report.correctAnswers}</div>
+      <Box >
 
+          <div className=' report'>
+              <h1>Statistics</h1>
+              <div> Attemps:  {report.attempts}</div>
+              <Divider />
+              <div> The time:  {report.theTime}</div>
 
-    </div>
+              <Divider />
+              <div> Correct answers:  {report.correctAnswers}</div>
+              <Divider />
+              <div> Incorrect answers:  {report.attempts - report.correctAnswers}</div>
+          <div style={{ justifySelf: 'center'}}>
+            <Button variant='contained' type='button' color='success'
+            onClick={closeClick}
+            >Close</Button>
+            </div>
+            </div>
+      </Box>
 
   )
 }

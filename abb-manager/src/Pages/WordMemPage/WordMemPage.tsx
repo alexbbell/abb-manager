@@ -18,7 +18,6 @@ export const WordMemPage = () => {
     return (
         <div>
             <WordMemory />
-            <WordReport />
         </div>
     );
 };

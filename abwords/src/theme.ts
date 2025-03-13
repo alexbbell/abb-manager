@@ -1,6 +1,4 @@
-import styled from "@emotion/styled";
 import { createTheme, SxProps, Theme } from "@mui/material";
-import MuiCard from '@mui/material/Card';
 export const theme = createTheme({
     components: {
 

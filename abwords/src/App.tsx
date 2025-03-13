@@ -7,11 +7,12 @@ import { Dashboard } from './Pages/Dashboard/Dashboard';
 import { EditBlog } from './Pages/EditBlog/EditBlog';
 import { ThemeProvider } from '@mui/material';
 import store, {persistor} from './Store/store'
-import { theme } from './theme';
+
 import { Provider } from 'react-redux';
 import { WordMemPage } from './Pages/WordMemPage/WordMemPage';
 import { PersistGate} from 'redux-persist/integration/react'
 import { SignupPage } from './Pages/SignupPage/SignupPage';
+import { theme } from './theme';
 
 function App() {
   return (

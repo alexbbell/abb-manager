@@ -1,5 +1,5 @@
 
-console.log('process.env', process.env)
+
 
 export interface IConstant {
     mainApiUrl: string,
@@ -12,8 +12,8 @@ const siteObjectsDev:IConstant = {
 const siteObjectsProd:IConstant = {
     mainApiUrl: "https://beliaeff.ru/api/"
 }
-
-export const SiteVars: IConstant = (process.env.REACT_APP_ENV === "dev") ? siteObjectsDev : siteObjectsProd
+console.log('t', import.meta.env )
+export const SiteVars: IConstant = (import.meta.env.VITE_APP_ENV === "dev") ? siteObjectsDev : siteObjectsProd
 
 export const modalStyle = {
     position: 'absolute',

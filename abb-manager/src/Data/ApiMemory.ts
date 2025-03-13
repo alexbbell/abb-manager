@@ -102,7 +102,7 @@ export class ApiMemory {
                         }
                         resolve(t)
                     } catch {
-                        reject({ words: [], isError: true, errorText: 'Error parsing the response' })    
+                        reject({ words: [], isError: true, errorText: 'Error parsing the response' })
                     }
                 }).catch(err => {
                     console.error(err)
@@ -134,6 +134,25 @@ export class ApiMemory {
             })
         })
     }
+
+    DeleteWordHistory = async (token: string): Promise<string> => {
+        const url = 'https://localhost:7168/api/WordHistories/';
+        const config = {
+            headers: {'Authorization': `Bearer ${token}`
+            }
+        }
+        return new Promise<string>( (resolve, reject) => {
+            axios.delete(url, config ).then(res => {
+                console.log(`result ${res.data}`)
+                const result: string = res.data
+                resolve(result)
+            }).catch(err => {
+                console.error(err)
+                resolve(err)
+            })
+        })
+    }
+
 
 
 

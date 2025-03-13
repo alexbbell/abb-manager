@@ -22,7 +22,7 @@ export const bgStyles: SxProps<Theme> = {
     background: "rgba(0, 0, 0, 0.3)",
     color: "white"
   };
-  
+
 type BtnColor = 'green' | 'blue' | 'red'
 type Props = {
 
@@ -59,7 +59,7 @@ export const WordMemory = (props: Props) => {
     const [items, setItems ] = React.useState<IWord[]>([])
     const [timerOut, setTimerOut] = React.useState(true)
     const [showDialog, setShowDialog] = React.useState(false)
-    
+
     const dialogClose = React.useCallback ( () =>{
         setShowDialog(false)
     }, [showDialog])
@@ -146,7 +146,7 @@ export const WordMemory = (props: Props) => {
         return obj1.id === obj2.id
     }
 
-    
+
 
       const renderButton = (word:IWordButton, index:number):JSX.Element  => {
         return (
@@ -178,7 +178,7 @@ export const WordMemory = (props: Props) => {
 
                 //setAnswers(newAnswers)
                 dispatch(addItem(newAnswer))
-                
+
                 api.SaveHistory(tokens.accessToken, newAnswer)
                 setTimer(delay)
                 setAttempt(attempt + 1)
@@ -231,6 +231,10 @@ onClick={ async () => {
         setTimerOut(true)
         setCntDown(newTime)
         setShowDialog(true)
+        setTimeout(() => {
+            api.DeleteWordHistory(tokens.accessToken)
+
+        }, 2000);
 }}
 >End</Button>
 }
@@ -269,8 +273,8 @@ onClick={ async () => {
     </Grid2>
     <Grid2 size={ 2 } ></Grid2>
 
-<Dialog open={showDialog} 
-    onClose={() => setShowDialog(false)} 
+<Dialog open={showDialog}
+    onClose={() => setShowDialog(false)}
     style={{ background: 'rgba(0, 0, 0, 0.1) '}}
 
 >

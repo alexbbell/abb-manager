@@ -1,9 +1,10 @@
 export interface IAccount {
     login: string,
     password: string,
+    rememberMe: boolean,
 }
 export const emptyAuthParams: IAccount = {
-    login: '', password: ''
+    login: '', password: '', rememberMe: false
 }
 
 export interface ITokens {

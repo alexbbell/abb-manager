@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 interface CountdownProps {
   targetDate: string; // ISO date string (e.g., "2024-12-31T23:59:59")
@@ -14,7 +14,7 @@ interface TimeLeft {
 }
 
 const Countdown: React.FC<CountdownProps> = ({ targetDate, onTimeOut, isActive }) => {
-  const calculateTimeLeft = (): TimeLeft => {
+  const calculateTimeLeft =  useCallback(() => {
     const now = new Date();
     const target = new Date(targetDate);
     const difference = target.getTime() - now.getTime();
@@ -29,9 +29,10 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onTimeOut, isActive }
       minutes: Math.floor((difference / (1000 * 60)) % 60),
       seconds: Math.floor((difference / 1000) % 60),
     };
-  };
+  }, [targetDate]);
 
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft());
+
 
   useEffect(() => {
     if (!isActive) return; // Timer only runs if isActive is true
@@ -55,7 +56,7 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onTimeOut, isActive }
     }, 1000);
 
     return () => clearInterval(timer); // Cleanup on component unmount or isActive change
-  }, [isActive, targetDate, onTimeOut]);
+  }, [isActive, targetDate, onTimeOut, calculateTimeLeft]);
 
   return (
     <div>

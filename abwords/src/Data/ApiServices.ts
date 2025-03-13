@@ -6,8 +6,9 @@ export class ApiServices {
     private _authUrl = `${SiteVars.mainApiUrl}Account/Login`
 
     async AuthLogin(authRequest: IAccount): Promise<IAuthResponse> {
+        console.log('bodyRequest')
         const bodyRequest = {
-            email: authRequest.login, password: authRequest.password
+            email: authRequest.login, password: authRequest.password, rememberMe:  authRequest.rememberMe,
         }
         try {
             const response = await fetch(this._authUrl, {
@@ -17,7 +18,7 @@ export class ApiServices {
                 },
                 body: JSON.stringify(bodyRequest)
             });
-
+console.log('response', response)
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

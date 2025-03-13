@@ -16,10 +16,6 @@ export const StartPage = () => {
         console.log('isTokenStr', tokens)
         try {
             if(tokens.accessToken) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                //const jwt:any = jwtDecode(tokens.accessToken)
-                //const dexp = dayjs(jwt.exp).format()
-                //console.log(jwt.exp, dexp)
                 setAccessToken (tokens.accessToken)
             }
         } catch (err) {

@@ -106,6 +106,7 @@ console.log('timerEnd',timerEnd.endtime,  dayjs().format('YYYY-MM-DDTHH:mm:ss'),
             } else {
                 setIsDisabled(true)
                 setCntDown(timerEnd.endtime)
+                setItems(words)
                 return 'timeout'
             }
         } catch (ex) {
@@ -252,21 +253,25 @@ console.log('timerEnd',timerEnd.endtime,  dayjs().format('YYYY-MM-DDTHH:mm:ss'),
 <Button variant='contained'  sx={{width: '100%'}}
     onClick={ async () => {
         const t =  await api.SetTimer(tokens.accessToken, 'start')
+        const words = await InitialWordLoad()
         const newTime = dayjs(t.endtime).format('YYYY-MM-DDTHH:mm:ss')
         dispatch(cleanItems())
         setTimerOut(false)
         setCntDown(newTime)
         GetTimer()
-        SetWordCombination(items)
+        
+        
+        SetWordCombination(words)
 }}>Start</Button>
 :
 <Button variant='contained' color='primary' title='End' sx={{width: '100%'}}
 onClick={ async () => {
     const t =  await api.SetTimer(tokens.accessToken, 'stop')
-        const newTime = dayjs(t.endtime).format('YYYY-MM-DDTHH:mm:ss')
+    const newTime = dayjs(t.endtime).format('YYYY-MM-DDTHH:mm:ss')
         setTimerOut(true)
         setCntDown(newTime)
         setShowDialog(true)
+
         setTimeout(() => {
             api.DeleteWordHistory(tokens.accessToken)
 

@@ -35,7 +35,7 @@ export const WordMemory = (props: Props) => {
     const [cWord, setCWord] = React.useState<IWord>( WordEmpty);
     const [altWords, setAltWords] = React.useState<IWordButton[]>([]);
     const [attempt, setAttempt] = React.useState<number>(0);
-    const [isLoaded, setIsLoaded] = React.useState(false)
+    const [isWordsLoaded, setIsWordsLoaded] = React.useState(false)
     // const [isAnswerCorrect, setIsAnswerCorrect] = React.useState(false)
     const [wordsLoaded, setWordsLoaded] = React.useState<boolean>(false);
 
@@ -67,6 +67,11 @@ export const WordMemory = (props: Props) => {
         setTimerOut(true)
       };
 
+    const ManageStates = (worldsLoaded:boolean, buttonsDisabled:boolean) => {
+        setIsWordsLoaded(worldsLoaded)
+        setIsDisabled(buttonsDisabled)
+    }
+    
     const GetTimer = async():Promise<string> => {
         let  timerEnd: ICountDown =  {endtime: ''}
         try {
@@ -75,21 +80,27 @@ export const WordMemory = (props: Props) => {
             console.error(err)
             timerEnd = { endtime: new Date().toString()}
         }
-
+console.log('timerEnd',timerEnd.endtime,  dayjs().format('YYYY-MM-DDTHH:mm:ss'),  timerEnd.endtime > dayjs().format('YYYY-MM-DDTHH:mm:ss'));
         try {
             if(timerEnd.endtime === '') {
-                setIsLoaded(true)
-                setIsDisabled(true)
+                ManageStates(true, true)
                 return ''
             }
 
+            
             if (timerEnd.endtime > dayjs().format('YYYY-MM-DDTHH:mm:ss')) {
-
                 console.log('InitialWordLoad')
                 //setIsLoaded(true)
+                const words = await InitialWordLoad()
+                console.log('words', words)
+                ManageStates(false, false)
                 setTimerOut(false)
-                setIsDisabled(false)
                 setCntDown(timerEnd.endtime)
+                //setCWord( {id: 1, translate1: 'huy', translate2: "1222", translate3: 'test'})
+                setCWord( words[1])
+                setAltWords(fillAnswers2Choose(words[1], words))
+
+                setItems(words)
                 return 'timeis'
 
             } else {
@@ -104,21 +115,26 @@ export const WordMemory = (props: Props) => {
     }
 
     const InitialWordLoad = async():Promise<IWord[]> => {
-        api.GetWordsFromCollection(1).then( res => {
-            const items = res.words
-            setItems(items)
-            setWordsLoaded(true)
-            return items
-         }).catch(err => {
-            console.error(err)
-            setItems([])
-            return []
-         })
-         return []
+        return new Promise<IWord[]> ((resolve, reject) => {
+            api.GetWordsFromCollection(1).then( res => {
+                const items = res.words
+    //            setItems(items)
+    //            setWordsLoaded(true)
+                console.log('items', res.words)
+                resolve( items)
+             }).catch(err => {
+                console.error(err)
+                //setItems([])
+                reject([])
+             })
+
+        })
+
     }
 
     const SetWordCombination = async(appItems:IWord[]) : Promise<void> => {
         const item:IWord = appItems[Math.floor(Math.random()*items.length)];
+        console.log('SetWordCombination')
         appItems.map( (x) => {
             return {
                 ...x,
@@ -135,6 +151,8 @@ export const WordMemory = (props: Props) => {
         if(!wordsLoaded) {
              InitialWordLoad().then(appItems => {
                  //SetWordCombination(appItems)
+                 //SetWordCombination(appItems)
+                 
              })
         }
 
@@ -142,9 +160,10 @@ export const WordMemory = (props: Props) => {
         GetTimer().then( (str) => {
             if(str === 'timeis') {
                 console.log(words)
+                
 
             }
-            setIsLoaded(true)
+            setIsWordsLoaded(true)
 
         })
     }, [cntDown])
@@ -223,7 +242,7 @@ export const WordMemory = (props: Props) => {
 <h1>WordMemory</h1>
 
 {
-    !isLoaded ?
+    !isWordsLoaded ?
      <>Loading... </> :
     <Grid2 container>
      <Grid2 size={ { sm: 2 }} sx={{ px: '10px'}} >

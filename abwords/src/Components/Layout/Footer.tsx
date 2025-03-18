@@ -1,9 +1,7 @@
 // @flow
 import * as React from 'react';
-type Props = {
 
-};
-export const Footer = (props: Props) => {
+export const Footer = () => {
     return (
         <div>
             Footer

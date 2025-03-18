@@ -8,7 +8,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 import './Logins.css'
 import { dialogTheme } from '../../theme';
-import { Box, Card, Checkbox, FormControlLabel, TextField, Typography } from '@mui/material';
+import { Box, Card, Checkbox, FormControlLabel, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 interface SignUpProps {
   open: boolean;
@@ -39,6 +40,20 @@ interface IFormError {
   const [formRegister, setFormRegister] = React.useState<IFormRegister>( {
     email: '', password: '', confirmPassword: '', agreeTerms: true  })
   const [errorDialog, setErrorDialog] = React.useState<IErrorDialog>( emptyErrorDialog)
+  
+  
+  const [showPassword, setShowPassword] = React.useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = () => setShowPassword(!showPassword);
+  React.useEffect( () => {
+    const emailInput = document.querySelector<HTMLInputElement>('input[name="email"]');
+    if (emailInput && emailInput.value) {
+      const newValue = {...formRegister}
+      newValue.email =  emailInput.value
+      setFormRegister(newValue ); // Capture Chrome autofill
+    }
+
+  }, [])
 
   return (
     <Card variant="outlined" sx={{
@@ -60,7 +75,9 @@ interface IFormError {
           required
           variant='standard'
           size='small'
+          
           margin='none'
+          defaultValue={formRegister.email}
           value={formRegister.email}
           onChange={ (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
             const newFormRegister = {...formRegister}
@@ -73,7 +90,7 @@ interface IFormError {
           aria-label='Email address'
           placeholder="Email address"
           type="email"
-          title='Email adress'
+          title='Email address'
           helperText={ formRegister.email === '' ? 'Email is required' : ''}
           fullWidth
         />
@@ -97,8 +114,24 @@ interface IFormError {
           label="Password"
           aria-label='Password'
           placeholder="Password"
-          type="password"
-          fullWidth
+          type={showPassword ? "text" : "password"} 
+                fullWidth
+          slotProps={
+            {
+              input: {
+                endAdornment: <InputAdornment position='end'>
+                   <IconButton
+          aria-label="toggle password visibility"
+          onClick={handleClickShowPassword}
+          onMouseDown={handleMouseDownPassword}
+        >
+          {showPassword ? <Visibility /> : <VisibilityOff />}</IconButton>
+                </InputAdornment>
+              }
+            }
+            
+          }
+          
         />
 
 <TextField

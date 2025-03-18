@@ -12,7 +12,6 @@ import Card from '@mui/material/Card/Card';
 import Typography from '@mui/material/Typography/Typography';
 import ForgotPassword from './ForgotPassword';
 import { Label } from '@mui/icons-material';
-import SignUp from './SignUp';
 
 export const LoginForm = () => {
     const navigate = useNavigate();
@@ -33,12 +32,12 @@ export const LoginForm = () => {
       setOpenForgot(false);
     };
 
-    const handleClickRegisterOpen = () => {
-      setOpenRegister(true);
-    };
-    const handleRegisterClose = () => {
-      setOpenRegister(false);
-    };
+    // const handleClickRegisterOpen = () => {
+    //   setOpenRegister(true);
+    // };
+    // const handleRegisterClose = () => {
+    //   setOpenRegister(false);
+    // };
 
     type tLoginFields = 'login' | 'password'
     const apiServices = new ApiServices()
@@ -117,6 +116,8 @@ export const LoginForm = () => {
                 onChange={ (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                 inputLogin('login', event.currentTarget.value)
             }} />
+            <br />
+            { emailError  } 
             </FormControl>
 
                 <FormControl>

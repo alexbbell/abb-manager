@@ -4,15 +4,22 @@ export const theme = createTheme({
 
         MuiTextField: {
             defaultProps: {
-                fullWidth: true
+                fullWidth: true,
+                slotProps: {
+                    inputLabel: {
+                      shrink: true,
+                    },
+                  },
             },
             styleOverrides: {
                 root: {
                 },
-
-
+                
             },
+
+            
         },
+
 
         MuiInputBase: {
             styleOverrides: {

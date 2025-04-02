@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import { ApiBlogServices } from '../../Data/ApiBlogs';
-import { IBlog, IBlogReponse } from '../../Data/interfaces';
+import { IBlog, IBlogReponse, ITokens } from '../../Data/interfaces';
 import { Link, useNavigate } from 'react-router-dom';
 import { Box, Button, Modal, Pagination } from '@mui/material';
 import { modalStyle } from '../../Data/constants';
@@ -16,11 +16,12 @@ type Props = {
 export const PostsList = (props: Props) => {
     const navigate = useNavigate();
 
-
     const [items, setItems] = React.useState<IBlogReponse>( {blogItems: [], total: 0 })
 
     const dispatch = useAppDispatch()
-
+    const isTokenStr:string = localStorage.getItem('tokens')?? '{}'
+    const tokens: ITokens = JSON.parse(isTokenStr)
+    
     const page = useAppSelector( (state: RootState) => state.counter.currentPage)
     //const [page, setPage] = React.useState(1)
     const [removedItemsCounter, setRemovedItemsCounter] = React.useState(0)
@@ -41,7 +42,7 @@ export const PostsList = (props: Props) => {
     const [deleteButtonDisabled, setDeleteButtonDisabled] = React.useState(false)
 
     const loadItems = (page: number): void => {
-        apiBlogServices.getBlogItems(page).then(res => {
+        apiBlogServices.getBlogItems(tokens, page ).then(res => {
             setItems(res)
         }).catch(err => {
             console.error(err)

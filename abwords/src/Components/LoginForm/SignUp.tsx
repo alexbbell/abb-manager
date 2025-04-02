@@ -3,13 +3,13 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 
 import './Logins.css'
 import { dialogTheme } from '../../theme';
 import { Box, Card, Checkbox, FormControlLabel, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { IFormRegister } from '../WordMemory/data';
+import { ApiServices } from '../../Data/ApiServices';
 
 interface SignUpProps {
   open: boolean;
@@ -25,20 +25,17 @@ interface IErrorDialog {
 const emptyErrorDialog:IErrorDialog = {
   open: false, errorText : ''
 }
-interface IFormRegister {
-  email: string,
-  password: string,
-  confirmPassword: string,
-  agreeTerms: boolean
-}
+
+
 interface IFormError {
   isError: boolean,
   errorText: string
 }
 // export default function SignUp({ open, handleClose }: SignUpProps) {
   export default function SignUp() {
+  const apiServices = new ApiServices()
   const [formRegister, setFormRegister] = React.useState<IFormRegister>( {
-    email: '', password: '', confirmPassword: '', agreeTerms: true  })
+    email: 'guest@guest.de', password: 'Ab123456$', confirmPassword: 'Ab123456$', agreeTerms: true  })
   const [errorDialog, setErrorDialog] = React.useState<IErrorDialog>( emptyErrorDialog)
   
   
@@ -46,12 +43,17 @@ interface IFormError {
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
   React.useEffect( () => {
-    const emailInput = document.querySelector<HTMLInputElement>('input[name="email"]');
-    if (emailInput && emailInput.value) {
-      const newValue = {...formRegister}
-      newValue.email =  emailInput.value
-      setFormRegister(newValue ); // Capture Chrome autofill
-    }
+
+    // setTimeout(() => {
+    //   const emailInput = document.querySelector<HTMLInputElement>('input[name="email"]');
+    //   if (emailInput && emailInput.value) {
+    //     const newValue = {...formRegister}
+    //     newValue.email =  emailInput.value
+    //     setFormRegister(newValue ); // Capture Chrome autofill
+        
+    //   }
+      
+    // },1500);
 
   }, [])
 
@@ -66,26 +68,27 @@ interface IFormError {
         'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
     }}>
 
-          <h1>SignUp</h1>
+        <h1>SignUp</h1>
+
       <Box sx={ dialogTheme}>
+      <form noValidate>
 
 
         <TextField
           autoFocus
           required
           variant='standard'
-          size='small'
-          
+          size='small' 
+
+
           margin='none'
-          defaultValue={formRegister.email}
           value={formRegister.email}
           onChange={ (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
             const newFormRegister = {...formRegister}
             newFormRegister.email = event.currentTarget.value
             setFormRegister(newFormRegister)
           }}
-          id="email"
-          name="email"
+          
           label="Email address"
           aria-label='Email address'
           placeholder="Email address"
@@ -94,7 +97,7 @@ interface IFormError {
           helperText={ formRegister.email === '' ? 'Email is required' : ''}
           fullWidth
         />
-
+</form>
     <TextField
           autoFocus
           required
@@ -151,9 +154,9 @@ interface IFormError {
 
           id="confirmPassword"
           name="confirmPassword"
-          label="confirmPassword"
-          aria-label='confirmPassword'
-          placeholder="confirmPassword"
+          label="Confirm Password"
+          aria-label='Confirm Password'
+          placeholder="Confirm Password"
           type="password"
           fullWidth
         />
@@ -190,7 +193,7 @@ interface IFormError {
               formRegister.password !== formRegister.confirmPassword ||
               !formRegister.agreeTerms
            }
-          onClick={() => {
+          onClick={async () => {
             console.log('formRegister', formRegister)
             if(!formRegister.agreeTerms) {
               const newErrorDialog: IErrorDialog = {
@@ -199,6 +202,18 @@ interface IFormError {
               setErrorDialog(newErrorDialog)
               return
             }
+            
+            const response = await apiServices.RegisterUser(formRegister)
+            if(!response.isError ) {
+              console.log(`it's ok`)
+            } else {
+              console.log(`${response.errorText}`) 
+              const newErrorDialog: IErrorDialog = {
+                open: true, errorText: `${response.errorText}`
+              }
+              setErrorDialog(newErrorDialog)
+            }
+
             if (formRegister.email === 'alexey@beliaeff.ru') {
 
 
@@ -207,7 +222,6 @@ interface IFormError {
           Register
         </Button>
       </Box>
-
       <Dialog open={errorDialog.open}
       onClose={ () => {
         setErrorDialog( { open: false, errorText: ''})

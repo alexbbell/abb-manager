@@ -1,6 +1,6 @@
 import { error } from "console"
 import { SiteVars } from "./constants"
-import { IAccount, IAuthResponse, IBaseItem, IBlog, IBlogReponse, IMoveFiles, IOperationResult } from "./interfaces"
+import { IAccount, IAuthResponse, IBaseItem, IBlog, IBlogReponse, IMoveFiles, IOperationResult, ITokens } from "./interfaces"
 import axios from "axios"
 
 export class ApiBlogServices {
@@ -8,17 +8,25 @@ export class ApiBlogServices {
     private _catUrl = `${SiteVars.mainApiUrl}Categories`
     private _blogUrl = `${SiteVars.mainApiUrl}Blogs`
 
-    getBlogItems = async (page?:number, perPage?: number):Promise<IBlogReponse> => {
-        return new Promise<IBlogReponse>( (resolve, reject) => {
+    getBlogItems = async (tokens: ITokens, page?: number, perPage?: number): Promise<IBlogReponse> => {
+        return new Promise<IBlogReponse>((resolve, reject) => {
             const url = `${this._blogUrl}?page=${page}`
-            fetch(url)
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json;charset=UTF-8",
+                    'Authorization': `Bearer ${tokens.accessToken}`
+                }
+            })
                 .then(res => res.json())
                 .then(result => {
                     resolve(result)
                 }).catch(err => {
-                console.error(err)
-                reject([])
-            })
+                    console.error(err)
+                    reject([])
+                })
         })
     }
 

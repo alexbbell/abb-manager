@@ -9,11 +9,27 @@ export const WordEmpty: IWord = {
     translate1: '',
     translate2: '',
 }
-export interface IWordsResponse {
-    words: IWord[],
+
+/// Responses
+export interface IBaseResponse {
     isError?: boolean,
     errorText?: string
+    theResponse?: string
 }
+
+export interface IWordsResponse  extends IBaseResponse{
+    words: IWord[],
+    
+}
+
+
+// Form Register
+export interface IFormRegister {
+    email: string,
+    password: string,
+    confirmPassword: string,
+    agreeTerms: boolean
+  }
 
 export interface IWordButton extends IWord {
     answerSuccess: boolean
@@ -35,7 +51,6 @@ export const emptyGameReport:IGameReport = {
     attempts: 0,
     correctAnswers: 0
 }
-
 
 
 // Вот пример на 100 слов уровня A2 на немецком с переводом на русский:

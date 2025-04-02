@@ -1,3 +1,5 @@
+
+import { IBaseResponse, IFormRegister } from "../Components/WordMemory/data"
 import { SiteVars } from "./constants"
 import { IAccount, IAuthResponse } from "./interfaces"
 
@@ -18,7 +20,6 @@ export class ApiServices {
                 },
                 body: JSON.stringify(bodyRequest)
             });
-console.log('response', response)
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -46,11 +47,73 @@ console.log('response', response)
             };
             return Promise.reject(badResult);
         }
+     
 
     }
 
 
+    RegisterUser = async (reginfo: IFormRegister): Promise<IBaseResponse> => {
+        try {
+            const response = await fetch(`${SiteVars.mainApiUrl}Account/RegisterUser`, {
+                method: 'POST',
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json;charset=UTF-8",
+                },
+                body: JSON.stringify(reginfo),
+            });
+            const data = await response.json();
 
+            if (!response.ok) {
+                return {
+                    isError: true,
+                    errorText: data.detail || "An unknown error occurred.",
+                };
+            }    
+            return { isError: false };
+        } catch (error) {
+            console.log(error)
+            return { isError: true, 
+                errorText: error instanceof Error ? error.message : "An unexpected error occurred",
+            };
+        }
+    };
+
+
+    GetUserInfo = async (token: string): Promise<IBaseResponse> => {
+
+        const config = {
+            headers: {'Authorization': `Bearer ${token}`
+            }}
+        try {
+            
+            const response = await fetch(`${SiteVars.mainApiUrl}Account/getinfo`, {
+                method: 'GET',
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json;charset=UTF-8",
+                    'Authorization': `Bearer ${token}`
+                },
+                
+                //body: JSON.stringify(reginfo),
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                return {
+                    isError: true,
+                    errorText: data.detail || "An unknown error occurred.",
+                };
+            }    
+            return { isError: false, theResponse: data };
+        } catch (error) {
+            console.log(error)
+            return { isError: true, 
+                errorText: error instanceof Error ? error.message : "An unexpected error occurred",
+            };
+        }
+    };
+    
 
 
 

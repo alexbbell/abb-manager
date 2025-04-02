@@ -65,11 +65,18 @@ export const LoginForm = () => {
         return isValid;
       };
 
-    const submitData = () => {
-        if(! validateInputs) {
+    const submitData = (request: IAccount, guest?:string) => {
+      const guestAcc:IAccount = {
+        login : 'guest@guest.de',
+        password : 'Ab123456$', rememberMe: false
+      
+      }
+      const aRequest = (guest !== undefined) ? guestAcc :   request
+       
+        if(!validateInputs && guest === null) {
             return
         } else {
-            apiServices.AuthLogin(authRequest)
+            apiServices.AuthLogin(aRequest)
             .then(res => {
                 const tokens: ITokens = {accessToken: res.tokens?.accessToken??'', refreshToken: res.tokens?.refreshToken??''}
                 localStorage.setItem('tokens', JSON.stringify(tokens))
@@ -116,7 +123,7 @@ export const LoginForm = () => {
                 onChange={ (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                 inputLogin('login', event.currentTarget.value)
             }} />
-            <br />
+
             { emailError  } 
             </FormControl>
 
@@ -140,8 +147,17 @@ export const LoginForm = () => {
             disabled={actionDisabled}
             onClick={ (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
                 event.preventDefault()
-                submitData()
+                submitData(authRequest, undefined)
             } }>Login</Button>
+
+
+<Button type='submit' size='small' variant='contained' color='info'
+            disabled={actionDisabled}
+            onClick={ (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+                event.preventDefault()
+
+                submitData( {login: '', password:'', rememberMe: false}, 'guest')
+            } }>Guest access</Button>
 
 <ForgotPassword open={openForgot} handleClose={ async () => handleForgotClose()} />
 {/* <SignUp open={openRegister} handleClose={ async () => handleRegisterClose()} /> */}

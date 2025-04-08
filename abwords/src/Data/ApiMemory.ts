@@ -113,7 +113,7 @@ export class ApiMemory {
 
 
     RenderGameReport = async (token: string): Promise<IGameReport> => {
-        const url = 'https://localhost:7168/api/WordReport/wordreport';
+        const url = `${this._apiUrl}WordReport/wordreport`;
         const config = {
             headers: {'Authorization': `Bearer ${token}`
             }
@@ -131,12 +131,13 @@ export class ApiMemory {
                 resolve(re)
             }).catch(err => {
                 console.error(err)
+                
             })
         })
     }
 
     DeleteWordHistory = async (token: string): Promise<string> => {
-        const url = 'https://localhost:7168/api/WordHistories/';
+        const url = `${this._apiUrl}WordHistories/`;
         const config = {
             headers: {'Authorization': `Bearer ${token}`
             }

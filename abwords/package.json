@@ -4,11 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite  --mode dev",
     "build": "tsc -b && vite build",
-    "builds": "tsc -b && vite build --silent",
+    "builds": "tsc  -b && vite build --silent",
+    "buildWithWarning": "tsc --noEmit && vite build --mode production",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "publishBack": "C:\\Projects\\AbbManagerClient\\Powershell\\deploy-dev-back.ps1 -deploymode=prod"
   },
   "dependencies": {
     "react": "^19.0.0",
